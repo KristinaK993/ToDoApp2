@@ -1,3 +1,5 @@
+using ToDoApp.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace API
 {
@@ -6,6 +8,9 @@ namespace API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDbContext<ToDoDbContext>(options =>
+    options.UseSqlServer("Server=DESKTOP-CLOUDR7\\SQLEXPRESS;Database=ToDoApp2;Trusted_Connection=True;TrustServerCertificate=True;"));
 
             // Add services to the container.
 
