@@ -1,5 +1,11 @@
 using ToDoApp.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
+using System.Reflection;
+using ToDoApp.Application.Tasks.Commands.CreateTask;
+using AutoMapper;
+using ToDoApp.Application.Tasks.Mapping;
+using AutoMapper;
 
 namespace API
 {
@@ -18,6 +24,14 @@ namespace API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddMediatR(typeof(CreateTaskCommand).Assembly);
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new TaskProfile()); // Lägg till fler profiler vid behov
+            });
+            IMapper mapper = mapperConfig.CreateMapper();
+            builder.Services.AddSingleton(mapper);
+
 
             var app = builder.Build();
 
