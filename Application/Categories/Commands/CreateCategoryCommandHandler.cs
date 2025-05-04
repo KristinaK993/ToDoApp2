@@ -10,14 +10,16 @@ namespace Application.Categories.Commands
     // Denna klass hanterar en CreateCategoryCommand som skickas via MediatR
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, OperationResult<int>>
     {
-        private readonly IRepository<Category> _categoryRepository;//repository för att spara kategorier i databas
+        
         private readonly IMapper _mapper;// AutoMapper-instans som används för att mappa DTO till entitet
+        private readonly IRepository<Category> _repository;
+
 
         // Konstruktor där repository och mapper kommer in via dependency injection
-        public CreateCategoryCommandHandler(IRepository<Category> categoryRepository, IMapper mapper)
+        public CreateCategoryCommandHandler(IRepository<Category> repository, IMapper mapper)
         {
-            _categoryRepository = categoryRepository; //sparar i repo
             _mapper = mapper;//sparar mapper
+            _repository = repository;
         }
 
         // Hanterar logiken när ett CreateCategoryCommand tas emot
@@ -27,7 +29,7 @@ namespace Application.Categories.Commands
             var category = _mapper.Map<Category>(request);
 
             //lägg till i databasen
-            await _categoryRepository.AddAsync(category);
+            await _repository.AddAsync(category);
 
             //returnera resultatet med nya IDt
             return OperationResult<int>.Ok(category.Id);

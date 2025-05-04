@@ -45,15 +45,15 @@ namespace API
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             //JWT authentisering
-            var jwtSettings = builder.Configuration.GetSection("Jwt");
-            builder.Services.AddAuthentication(options =>
+            var jwtSettings = builder.Configuration.GetSection("Jwt"); //hämtar inställningar (hela objektet)
+            builder.Services.AddAuthentication(options => //aktiverar JWT som inloggningssätt
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;//vilket autentiseringssystem som ska användas i detta fall, bearer
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters
+                options.TokenValidationParameters = new TokenValidationParameters //säkerhetsregler för JWT
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
@@ -61,14 +61,14 @@ namespace API
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = jwtSettings["Issuer"],
                     ValidAudience = jwtSettings["Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"])) //här skapas nyckeln
                 };
             });
 
             var app = builder.Build();
 
             // HTTP pipeline
-            if (app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment()) //i utvecklingsläge (säkrare att inte exp swagger i produktion)
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
