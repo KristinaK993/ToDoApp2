@@ -9,6 +9,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;   
 using System.Text;
+using ToDoApp.Domain.Entities;
+using ToDoApp.Domain.Interfaces;
 
 namespace API
 {
@@ -29,6 +31,11 @@ namespace API
 
             // MediatR - pekar på ett command i Application-lagret
             builder.Services.AddMediatR(typeof(CreateTaskCommand).Assembly);
+
+            builder.Services.AddScoped<IRepository<Category>, Repository<Category>>();
+            builder.Services.AddScoped<IRepository<TaskItem>, Repository<TaskItem>>();
+
+
 
             // AutoMapper - laddar alla profiler i projektets assemblies
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
