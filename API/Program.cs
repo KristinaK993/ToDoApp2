@@ -11,6 +11,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ToDoApp.Domain.Entities;
 using ToDoApp.Domain.Interfaces;
+using FluentValidation;
+using ToDoApp.Application.Tasks.Behavior;
 
 namespace API
 {
@@ -34,6 +36,8 @@ namespace API
 
             builder.Services.AddScoped<IRepository<Category>, Repository<Category>>();
             builder.Services.AddScoped<IRepository<TaskItem>, Repository<TaskItem>>();
+            builder.Services.AddValidatorsFromAssemblyContaining<CreateTaskCommandValidator>();
+            builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 
 

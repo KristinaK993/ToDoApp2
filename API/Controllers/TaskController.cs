@@ -5,6 +5,8 @@ using ToDoApp.Application.Helpers;
 using ToDoApp.Application.Tasks.Queries;
 using ToDoApp.Application.Tasks.Commands.UpdateTask;
 using ToDoApp.Application.Tasks.Commands.DeleteTask;
+using ToDoApp.Domain.Entities;
+using ToDoApp.Domain.Interfaces;
 
 
 namespace API.Controllers
@@ -14,10 +16,12 @@ namespace API.Controllers
     public class TaskController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IRepository<TaskItem> _taskRepository;
 
-        public TaskController(IMediator mediator)
+        public TaskController(IMediator mediator, IRepository<TaskItem> taskRepository)
         {
             _mediator = mediator;
+            _taskRepository = taskRepository;
         }
 
         [HttpPost]
@@ -80,6 +84,12 @@ namespace API.Controllers
             return BadRequest(result.ErrorMessage);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllTasks() //hämta alla tasks
+        {
+            var tasks = await _taskRepository.GetAllAsync(); 
+            return Ok(tasks);
+        }
 
     }
 }
