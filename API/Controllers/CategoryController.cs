@@ -5,6 +5,8 @@ using ToDoApp.Application.Categories.Queries;
 using ToDoApp.Application.Tasks.DTOs;
 using ToDoApp.Application.Categories.Commands.UpdateCategory;
 using ToDoApp.Application.Categories.Commands;
+using ToDoApp.Domain.Entities;
+using ToDoApp.Domain.Interfaces;
 
 namespace API.Controllers
 {
@@ -13,10 +15,12 @@ namespace API.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IRepository<Category> _categoryRepository;
 
-        public CategoryController(IMediator mediator) // Konstruktor – tar emot IMediator via dependency injection
+        public CategoryController(IMediator mediator, IRepository<Category> categoryRepository) // Konstruktor – tar emot IMediator via dependency injection
         {
             _mediator = mediator; //Injicerar MediatR så controller kan skicka queries
+            _categoryRepository = categoryRepository;
         }
 
         // GET: api/category
