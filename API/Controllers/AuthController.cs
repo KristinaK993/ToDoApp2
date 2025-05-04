@@ -29,11 +29,13 @@ namespace ToDoApp.API.Controllers
         public IActionResult Login([FromBody] LoginRequest request)
         {
             // Hämta användare från databasen
-            var user = _context.Users.SingleOrDefault(u =>
-                u.Username == request.Username && u.Password == request.Password); // Enkel lösenordskontroll (plaintext)
+            var user = _context.Users.FirstOrDefault(u =>
+                u.Username == request.Username);
 
-            if (user == null)
+            if (user == null || !PasswordHasher.Verify(request.Password, user.PasswordHash))
+            {
                 return Unauthorized("Felaktigt användarnamn eller lösenord");
+            }
 
             // Skapa token
             var token = GenerateJwtToken(user);

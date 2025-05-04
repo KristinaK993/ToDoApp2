@@ -7,36 +7,50 @@ namespace ToDoApp.Infrastructure.Data
     {
         public static void Seed(ToDoDbContext context)
         {
-            if (!context.Users.Any())
+            //Om det redan finns data – hoppa över
+            if (context.Users.Any() || context.Tasks.Any() || context.Categories.Any())
+                return;
+
+            // Lägg till kategorier först
+            var categories = new List<Category>
             {
-                // Faker för User
-                var userFaker = new Faker<User>()
-                    .RuleFor(u => u.Username, f => f.Internet.UserName())
-                    .RuleFor(u => u.Password, f => "password") // Alla har samma lösenord
-                    .RuleFor(u => u.Role, f => "User");
+                new Category { Name = "Work" },
+                new Category { Name = "Personal" },
+                new Category { Name = "Hobby" }
+            };
+            context.Categories.AddRange(categories);
+            context.SaveChanges(); 
 
-                context.Users.AddRange(userFaker.Generate(5)); // Skapa 5 användare
-            }
-
-            if (!context.Categories.Any())
+            // Lägg till användare
+            var users = new List<User>
             {
-                var catFaker = new Faker<Category>()
-                    .RuleFor(c => c.Name, f => f.Commerce.Categories(1)[0]);
+                new User
+                {
+                    Username = "admin",
+                    Email = "admin@example.com",
+                    PasswordHash = PasswordHasher.Hash("admin123"),
+                    Role = "Admin"
+                },
+                new User
+                {
+                    Username = "user1",
+                    Email = "user1@example.com",
+                    PasswordHash = PasswordHasher.Hash("user123"),
+                    Role = "User"
+                }
+            };
+            context.Users.AddRange(users);
+            context.SaveChanges(); 
 
-                context.Categories.AddRange(catFaker.Generate(3));
-            }
+            // Generera tasks kopplade till riktiga kategorier och användare
+            var taskFaker = new Faker<TaskItem>()
+                .RuleFor(t => t.Title, f => f.Lorem.Sentence())
+                .RuleFor(t => t.Description, f => f.Lorem.Paragraph())
+                .RuleFor(t => t.IsCompleted, f => f.Random.Bool())
+                .RuleFor(t => t.CategoryId, f => f.PickRandom(categories).Id)
+                .RuleFor(t => t.UserId, f => f.PickRandom(users).Id);
 
-            if (!context.Tasks.Any())
-            {
-                var taskFaker = new Faker<TaskItem>()
-                    .RuleFor(t => t.Title, f => f.Lorem.Sentence(3))
-                    .RuleFor(t => t.Description, f => f.Lorem.Paragraph())
-                    .RuleFor(t => t.IsCompleted, f => f.Random.Bool())
-                    .RuleFor(t => t.CategoryId, f => f.Random.Int(1, 3));
-
-                context.Tasks.AddRange(taskFaker.Generate(10));
-            }
-
+            context.Tasks.AddRange(taskFaker.Generate(10));
             context.SaveChanges();
         }
     }
