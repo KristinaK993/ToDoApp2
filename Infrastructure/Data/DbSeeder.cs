@@ -10,11 +10,11 @@ namespace ToDoApp.Infrastructure.Data
             try
             {
                 // Kontrollera om data redan finns – annars hoppa över seedning
-              //  if (context.Users.Any() || context.Tasks.Any() || context.Categories.Any())
-                //{
-                   // Console.WriteLine("Seedning avbruten: data finns redan.");
-                    //return;
-                //}
+                if (context.Users.Any() || context.Tasks.Any() || context.Categories.Any())
+                {
+                    Console.WriteLine("Seedning avbruten: data finns redan.");
+                    return;
+                }
 
                 //Lägg till kategorier
                 var categories = new List<Category>
