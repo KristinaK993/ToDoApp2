@@ -8,13 +8,13 @@ using MediatR;
 
 namespace ToDoApp.Application.Tasks.Behavior
 {
-    //// Detta är ett MediatR pipeline-behavior som kör validering före varje handler
+    // Detta är ett MediatR pipeline-behavior som kör validering före varje handler
     public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-        //// Konstruktor – injicerar alla registrerade validatorer för denna typ av request
+        // Konstruktor – injicerar alla registrerade validatorer för denna typ av request
         public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
         {
             _validators = validators;
